@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voter Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome, <%= session.getAttribute("voterName") %></h2>
+        <h3>Available Elections</h3>
+        <form action="VoteServlet" method="post">
+            <table>
+                <tr><th>Candidate</th><th>Action</th></tr>
+                <% 
+                    // Example of dynamic data fetch
+                    Connection con = (Connection)application.getAttribute("DBConnection");
+                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery("SELECT * FROM candidates");
+                    while(rs.next()){ 
+                %>
+                <tr>
+                    <td><%= rs.getString("candidate_name") %></td>
+                    <td><button name="candidateId" value="<%= rs.getInt("id") %>">Vote</button></td>
+                </tr>
+                <% } %>
+            </table>
+        </form>
+        <a href="results.jsp" class="btn">View Results</a>
+        <a href="LogoutServlet" class="btn">Logout</a>
+    </div>
+</body>
+</html>

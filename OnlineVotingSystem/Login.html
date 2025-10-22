@@ -1,0 +1,33 @@
+<form id="loginForm">
+    <label>Username:</label>
+    <input type="text" name="username" required>
+    
+    <label>Password:</label>
+    <input type="password" name="password" required>
+    
+    <label>User Type:</label>
+    <select name="role" id="role" required>
+        <option value="">-- Select --</option>
+        <option value="voter">Voter</option>
+        <option value="admin">Admin</option>
+    </select>
+    
+    <button type="submit" class="btn">Login</button>
+</form>
+
+<link rel="stylesheet" href="style.css">
+
+
+<script>
+  document.getElementById("loginForm").addEventListener("submit", function(event){
+    event.preventDefault();
+    const role = document.getElementById("role").value;
+    if (role === "admin") {
+      window.location.href = "Admin_Dashboard.html";
+    } else if (role === "voter") {
+      window.location.href = "Voter_Dashboard.html";
+    } else {
+      alert("Please select a role!");
+    }
+  });
+</script>
