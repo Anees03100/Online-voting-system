@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration - Online Voting System</title>
+    <link href="styles/auth.css" rel="stylesheet">
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card register-card">
+            <a href="index.html" class="auth-logo">
+                <div class="auth-logo-icon">
+                    <i class="icon-user-plus"></i>
+                </div>
+            </a>
+            <h2 class="auth-title">Voter Registration</h2>
+            <p class="auth-subtitle">Create your account to participate in elections</p>
+            
+            <form class="auth-form" onsubmit="validateRegisterForm(); return false;">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" minlength="3" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>CNIC Number</label>
+                        <input type="text" id="cnic" name="cnic" placeholder="xxxxx-xxxxxxx-x" pattern="[0-9]{5}-[0-9]{7}-[0-9]{1}" title="Format: xxxxx-xxxxxxx-x" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="age" name="age" placeholder="Enter your age" min="18" max="120" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" name="password" placeholder="Create a password" minlength="6" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" minlength="6" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-submit">Register</button>
+            </form>
+            
+            <script>
+                function validateRegisterForm() {
+                    var fullName = document.getElementById('fullName').value;
+                    var email = document.getElementById('email').value;
+                    var cnic = document.getElementById('cnic').value;
+                    var age = document.getElementById('age').value;
+                    var password = document.getElementById('password').value;
+                    var confirmPassword = document.getElementById('confirmPassword').value;
+                    
+                    if (!fullName || !email || !cnic || !age || !password || !confirmPassword) {
+                        alert('Please fill in all required fields!');
+                        return false;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        alert('Passwords do not match! Please try again.');
+                        return false;
+                    }
+                    
+                    if (password.length < 6) {
+                        alert('Password must be at least 6 characters long!');
+                        return false;
+                    }
+                    
+                    var ageNum = parseInt(age);
+                    if (isNaN(ageNum) || ageNum < 18) {
+                        alert('You must be at least 18 years old to register!');
+                        return false;
+                    }
+                    
+                    var registeredUsers = localStorage.getItem('registeredUsers');
+                    var users = [];
+                    
+                    if (registeredUsers && registeredUsers !== 'null') {
+                        try {
+                            users = JSON.parse(registeredUsers);
+                            if (!Array.isArray(users)) {
+                                users = [];
+                            }
+                        } catch (e) {
+                            users = [];
+                        }
+                    }
+                    
+                    for (var i = 0; i < users.length; i++) {
+                        if (users[i].email === email) {
+                            alert('This email is already registered. Please login instead!');
+                            setTimeout(function() {
+                                window.location.href = 'login-voter.html';
+                            }, 500);
+                            return false;
+                        }
+                    }
+                    
+                    var newUser = {
+                        fullName: fullName,
+                        email: email,
+                        cnic: cnic,
+                        age: ageNum,
+                        password: password,
+                        registeredDate: new Date().toISOString()
+                    };
+                    
+                    users.push(newUser);
+                    localStorage.setItem('registeredUsers', JSON.stringify(users));
+                    
+                    alert('Registration successful! Redirecting to login page...');
+                    setTimeout(function() {
+                        window.location.href = 'login-voter.html';
+                    }, 1000);
+                    
+                    return false;
+                }
+            </script>
+            
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login-voter.html">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

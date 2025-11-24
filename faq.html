@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Online Voting System</title>
+    <link href="styles/pages.css" rel="stylesheet">
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="icon-vote"></i>
+                </div>
+                <span>VoteSecure</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-content">
+        <div class="container">
+            <h1 class="page-title">Frequently Asked Questions</h1>
+            <p class="page-subtitle">Find answers to common questions</p>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>How do I register to vote?</h3>
+                        <i class="icon-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Click on "Register as Voter" on the homepage, fill in your details including full name, email, CNIC number, age, and create a secure password. You must be at least 18 years old to register.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>Is my vote secure and anonymous?</h3>
+                        <i class="icon-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! We use advanced encryption technology to ensure your vote is secure and completely anonymous. Your voting choice is never linked to your personal information.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>Can I change my vote after submitting?</h3>
+                        <i class="icon-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No, once you submit your vote, it cannot be changed. This ensures the integrity of the election. Please make sure of your choice before confirming.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>What if I forget my password?</h3>
+                        <i class="icon-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Contact our support team at support@votesecure.com with your registered email address, and we'll help you reset your password securely.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>How do I know which elections I can vote in?</h3>
+                        <i class="icon-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>After logging in, you'll see all active elections available to you on your dashboard. Elections are displayed based on your eligibility and registration status.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>What browsers are supported?</h3>
+                        <i class="icon-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>VoteSecure works on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version for the best experience.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Online Voting System. All rights reserved.</p>
+            <p class="team">Developed by Team Democracy</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFAQ(element) {
+            var faqItem = element.parentElement;
+            var isActive = faqItem.classList.contains('active');
+            
+            var allItems = document.querySelectorAll('.faq-item');
+            allItems.forEach(function(item) {
+                item.classList.remove('active');
+            });
+            
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
