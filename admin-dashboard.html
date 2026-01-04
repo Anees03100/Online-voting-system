@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Online Voting System</title>
+    <link href="styles/dashboard.css" rel="stylesheet">
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="icon-shield"></i>
+                </div>
+                <span>VoteSecure Admin</span>
+            </div>
+            <a href="index.html" class="logout">Logout</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Admin Dashboard</h1>
+            
+            <div class="admin-grid">
+                <a href="create-election.html" class="admin-card">
+                    <div class="admin-icon">
+                        <i class="icon-plus-circle"></i>
+                    </div>
+                    <h3>Create Election</h3>
+                    <p>Set up a new election event</p>
+                </a>
+
+                <a href="add-candidate.html" class="admin-card">
+                    <div class="admin-icon">
+                        <i class="icon-user-plus"></i>
+                    </div>
+                    <h3>Add Candidate</h3>
+                    <p>Register new candidates</p>
+                </a>
+
+                <a href="results.html" class="admin-card">
+                    <div class="admin-icon">
+                        <i class="icon-chart-bar"></i>
+                    </div>
+                    <h3>View Results</h3>
+                    <p>Check election statistics</p>
+                </a>
+            </div>
+
+            <h2 class="section-title">Created Elections</h2>
+            <div id="createdElections" class="elections-list">
+                <p class="no-data">No elections created yet. Create your first election above.</p>
+            </div>
+
+            <h2 class="section-title">Added Candidates</h2>
+            <div id="addedCandidates" class="candidates-list">
+                <p class="no-data">No candidates added yet. Add your first candidate above.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        window.onload = function() {
+            loadElections();
+            loadCandidates();
+        };
+
+        function loadElections() {
+            var elections = JSON.parse(localStorage.getItem('elections') || '[]');
+            var container = document.getElementById('createdElections');
+            
+            if (elections.length === 0) {
+                return;
+            }
+            
+            container.innerHTML = '';
+            elections.forEach(function(election) {
+                var card = document.createElement('div');
+                card.className = 'list-item';
+                card.innerHTML = '<div class="item-header">' +
+                    '<h4>' + election.title + '</h4>' +
+                    '<span class="item-date">' + election.startDate + '</span>' +
+                    '</div>' +
+                    '<p class="item-description">' + election.description + '</p>';
+                container.appendChild(card);
+            });
+        }
+
+        function loadCandidates() {
+            var candidates = JSON.parse(localStorage.getItem('candidates') || '[]');
+            var container = document.getElementById('addedCandidates');
+            
+            if (candidates.length === 0) {
+                return;
+            }
+            
+            container.innerHTML = '';
+            candidates.forEach(function(candidate) {
+                var card = document.createElement('div');
+                card.className = 'list-item';
+                card.innerHTML = '<div class="item-header">' +
+                    '<h4>' + candidate.name + '</h4>' +
+                    '<span class="item-badge">' + candidate.party + '</span>' +
+                    '</div>' +
+                    '<p class="item-description">Election: ' + candidate.election + '</p>';
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>

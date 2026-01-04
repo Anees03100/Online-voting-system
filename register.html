@@ -22,32 +22,39 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" minlength="3" required>
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" minlength="3" maxlength="50" pattern="[A-Za-z ]{3,50}" title="Only letters and spaces allowed (3-50 characters)" required>
+                        <small class="input-hint">Only letters and spaces (3-50 characters)</small>
                     </div>
                     
                     <div class="form-group">
                         <label>Email Address</label>
                         <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        <small class="input-hint">Valid email format required</small>
                     </div>
                     
                     <div class="form-group">
                         <label>CNIC Number</label>
                         <input type="text" id="cnic" name="cnic" placeholder="xxxxx-xxxxxxx-x" pattern="[0-9]{5}-[0-9]{7}-[0-9]{1}" title="Format: xxxxx-xxxxxxx-x" required>
+                        <small class="input-hint">Format: xxxxx-xxxxxxx-x</small>
                     </div>
                     
                     <div class="form-group">
                         <label>Age</label>
                         <input type="number" id="age" name="age" placeholder="Enter your age" min="18" max="120" required>
+                        <small class="input-hint">Must be 18 or older</small>
                     </div>
                     
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" id="password" name="password" placeholder="Create a password" minlength="6" required>
+                        <input type="password" id="password" name="password" placeholder="Create a password" minlength="8" required oninput="checkPasswordStrength()">
+                        <div id="passwordStrength" class="password-strength"></div>
+                        <small class="input-hint">Min 8 characters with letters and numbers</small>
                     </div>
                     
                     <div class="form-group">
                         <label>Confirm Password</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" minlength="6" required>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" minlength="8" required>
+                        <small class="input-hint">Must match password</small>
                     </div>
                 </div>
                 
@@ -55,10 +62,57 @@
             </form>
             
             <script>
+                function checkPasswordStrength() {
+                    var password = document.getElementById('password').value;
+                    var strengthDiv = document.getElementById('passwordStrength');
+                    
+                    if (password.length === 0) {
+                        strengthDiv.textContent = '';
+                        strengthDiv.className = 'password-strength';
+                        return;
+                    }
+                    
+                    var strength = 0;
+                    var feedback = [];
+                    
+                    if (password.length >= 8) strength++;
+                    else feedback.push('at least 8 characters');
+                    
+                    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+                    else if (/[a-zA-Z]/.test(password)) strength += 0.5;
+                    else feedback.push('letters');
+                    
+                    if (/[0-9]/.test(password)) strength++;
+                    else feedback.push('numbers');
+                    
+                    if (/[^a-zA-Z0-9]/.test(password)) strength++;
+                    
+                    var strengthText = '';
+                    var strengthClass = '';
+                    
+                    if (strength < 2) {
+                        strengthText = 'Weak password';
+                        strengthClass = 'weak';
+                    } else if (strength < 3) {
+                        strengthText = 'Medium password';
+                        strengthClass = 'medium';
+                    } else {
+                        strengthText = 'Strong password';
+                        strengthClass = 'strong';
+                    }
+                    
+                    if (feedback.length > 0) {
+                        strengthText += ' (add ' + feedback.join(', ') + ')';
+                    }
+                    
+                    strengthDiv.textContent = strengthText;
+                    strengthDiv.className = 'password-strength ' + strengthClass;
+                }
+                
                 function validateRegisterForm() {
-                    var fullName = document.getElementById('fullName').value;
-                    var email = document.getElementById('email').value;
-                    var cnic = document.getElementById('cnic').value;
+                    var fullName = document.getElementById('fullName').value.trim();
+                    var email = document.getElementById('email').value.trim();
+                    var cnic = document.getElementById('cnic').value.trim();
                     var age = document.getElementById('age').value;
                     var password = document.getElementById('password').value;
                     var confirmPassword = document.getElementById('confirmPassword').value;
@@ -68,19 +122,45 @@
                         return false;
                     }
                     
-                    if (password !== confirmPassword) {
-                        alert('Passwords do not match! Please try again.');
+                    var namePattern = /^[A-Za-z ]{3,50}$/;
+                    if (!namePattern.test(fullName)) {
+                        alert('Full name must contain only letters and spaces (3-50 characters)!');
                         return false;
                     }
                     
-                    if (password.length < 6) {
-                        alert('Password must be at least 6 characters long!');
+                    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(email)) {
+                        alert('Please enter a valid email address!');
+                        return false;
+                    }
+                    
+                    var cnicPattern = /^[0-9]{5}-[0-9]{7}-[0-9]{1}$/;
+                    if (!cnicPattern.test(cnic)) {
+                        alert('CNIC must be in format: xxxxx-xxxxxxx-x');
                         return false;
                     }
                     
                     var ageNum = parseInt(age);
-                    if (isNaN(ageNum) || ageNum < 18) {
-                        alert('You must be at least 18 years old to register!');
+                    if (isNaN(ageNum) || ageNum < 18 || ageNum > 120) {
+                        alert('You must be between 18 and 120 years old to register!');
+                        return false;
+                    }
+                    
+                    if (password.length < 8) {
+                        alert('Password must be at least 8 characters long!');
+                        return false;
+                    }
+                    
+                    var hasLetter = /[a-zA-Z]/.test(password);
+                    var hasNumber = /[0-9]/.test(password);
+                    
+                    if (!hasLetter || !hasNumber) {
+                        alert('Password must contain both letters and numbers!');
+                        return false;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        alert('Passwords do not match! Please try again.');
                         return false;
                     }
                     

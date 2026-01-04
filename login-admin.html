@@ -18,7 +18,7 @@
             <h2 class="auth-title">Admin Login</h2>
             <p class="auth-subtitle">Secure administrative access</p>
             
-            <form class="auth-form" action="admin-login.jsp" method="post">
+            <form class="auth-form" onsubmit="return handleAdminLogin()">
                 <div class="form-group">
                     <label>Admin Username</label>
                     <input type="text" name="username" placeholder="Enter admin username" required>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cast Your Vote - Online Voting System</title>
+    <link href="styles/dashboard.css" rel="stylesheet">
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="icon-vote"></i>
+                </div>
+                <span>VoteSecure</span>
+            </div>
+            <a href="voter-dashboard.html" class="logout">Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Presidential Election 2025</h1>
+            <p class="page-subtitle">Select your preferred candidate</p>
+            
+            <div id="candidatesGrid" class="candidates-grid">
+                <div class="candidate-card">
+                    <div class="candidate-photo">
+                        <i class="icon-user"></i>
+                    </div>
+                    <h3>John Anderson</h3>
+                    <p class="candidate-party">Democratic Party</p>
+                    <a href="#" onclick="return confirmVote('John Anderson')" class="btn-select">Select Candidate</a>
+                </div>
+
+                <div class="candidate-card">
+                    <div class="candidate-photo">
+                        <i class="icon-user"></i>
+                    </div>
+                    <h3>Sarah Mitchell</h3>
+                    <p class="candidate-party">Republican Party</p>
+                    <a href="#" onclick="return confirmVote('Sarah Mitchell')" class="btn-select">Select Candidate</a>
+                </div>
+
+                <div class="candidate-card">
+                    <div class="candidate-photo">
+                        <i class="icon-user"></i>
+                    </div>
+                    <h3>Michael Chen</h3>
+                    <p class="candidate-party">Independent</p>
+                    <a href="#" onclick="return confirmVote('Michael Chen')" class="btn-select">Select Candidate</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        window.onload = function() {
+            var candidates = JSON.parse(localStorage.getItem('candidates') || '[]');
+            if (candidates.length > 0) {
+                var candidatesGrid = document.getElementById('candidatesGrid');
+                candidates.forEach(function(candidate) {
+                    var candidateCard = document.createElement('div');
+                    candidateCard.className = 'candidate-card';
+                    candidateCard.innerHTML = '<div class="candidate-photo">' +
+                        '<i class="icon-user"></i>' +
+                        '</div>' +
+                        '<h3>' + candidate.name + '</h3>' +
+                        '<p class="candidate-party">' + candidate.party + '</p>' +
+                        '<a href="#" onclick="return confirmVote(\'' + candidate.name + '\')" class="btn-select">Select Candidate</a>';
+                    candidatesGrid.appendChild(candidateCard);
+                });
+            }
+        };
+        
+        function confirmVote(candidateName) {
+            var confirmed = confirm('Are you sure you want to vote for ' + candidateName + '?\n\nThis action cannot be undone.');
+            
+            if (confirmed) {
+                var votes = JSON.parse(localStorage.getItem('votes') || '{}');
+                votes[candidateName] = (votes[candidateName] || 0) + 1;
+                localStorage.setItem('votes', JSON.stringify(votes));
+                
+                alert('Your vote for ' + candidateName + ' has been recorded!');
+                window.location.href = 'vote-success.html';
+                return false;
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>

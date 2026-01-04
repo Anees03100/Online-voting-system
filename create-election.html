@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Election - Online Voting System</title>
+    <link href="styles/dashboard.css" rel="stylesheet">
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="icon-shield"></i>
+                </div>
+                <span>VoteSecure Admin</span>
+            </div>
+            <a href="admin-dashboard.html" class="logout">Back</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container form-container">
+            <h1 class="page-title">Create New Election</h1>
+            
+            <form class="admin-form" onsubmit="return validateElectionForm()">
+                <div class="form-group">
+                    <label>Election Title</label>
+                    <input type="text" id="electionTitle" name="title" placeholder="e.g., Presidential Election" minlength="5" maxlength="50" pattern="[A-Za-z ]{5,50}" title="Only letters and spaces (5-50 characters)" required>
+                    <small class="input-hint">Only letters and spaces (5-50 characters)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description" name="description" placeholder="Enter election description" rows="4" minlength="10" maxlength="200" required></textarea>
+                    <small class="input-hint">10-200 characters</small>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="startDate" name="startDate" required>
+                        <small class="input-hint">Election start date</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="endDate" name="endDate" required>
+                        <small class="input-hint">Must be after start date</small>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-submit-full">Create Election</button>
+            </form>
+            
+            <script>
+                function validateElectionForm() {
+                    var title = document.getElementById('electionTitle').value.trim();
+                    var description = document.getElementById('description').value.trim();
+                    var startDateValue = document.getElementById('startDate').value;
+                    var endDateValue = document.getElementById('endDate').value;
+                    
+                    if (!title || !description) {
+                        alert('Please fill in all required fields!');
+                        return false;
+                    }
+                    
+                    var titlePattern = /^[A-Za-z ]{5,50}$/;
+                    if (!titlePattern.test(title)) {
+                        alert('Election title must contain only letters and spaces (5-50 characters)!');
+                        return false;
+                    }
+                    
+                    if (description.length < 10 || description.length > 200) {
+                        alert('Description must be between 10 and 200 characters!');
+                        return false;
+                    }
+                    
+                    if (!startDateValue || !endDateValue) {
+                        alert('Please select both start and end dates!');
+                        return false;
+                    }
+                    
+                    var startDate = new Date(startDateValue + 'T00:00:00');
+                    var endDate = new Date(endDateValue + 'T00:00:00');
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    if (startDate < today) {
+                        alert('Start date cannot be in the past! Please select today or a future date.');
+                        return false;
+                    }
+                    
+                    if (endDate.getTime() <= startDate.getTime()) {
+                        alert('End date must be after start date! Please select a valid date range.');
+                        return false;
+                    }
+                    
+                    var daysDifference = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                    if (daysDifference < 1) {
+                        alert('Election must run for at least 1 day!');
+                        return false;
+                    }
+                    
+                    var elections = JSON.parse(localStorage.getItem('elections') || '[]');
+                    var newElection = {
+                        id: Date.now(),
+                        title: title,
+                        description: description,
+                        startDate: startDateValue,
+                        endDate: endDateValue,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    elections.push(newElection);
+                    localStorage.setItem('elections', JSON.stringify(elections));
+                    localStorage.setItem('lastCreatedElection', JSON.stringify(newElection));
+                    
+                    window.location.href = 'election-created.html';
+                    return false;
+                }
+            </script>
+        </div>
+    </main>
+</body>
+</html>

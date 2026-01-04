@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Results - Online Voting System</title>
+    <link href="styles/dashboard.css" rel="stylesheet">
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="icon-shield"></i>
+                </div>
+                <span>VoteSecure Admin</span>
+            </div>
+            <a href="admin-dashboard.html" class="logout">Back</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Election Results</h1>
+            <p class="page-subtitle" id="electionTitle">Presidential Election 2025</p>
+            
+            <div id="resultsContainer" class="results-container">
+                <p class="no-data">No results available yet. Votes will appear here once cast.</p>
+            </div>
+
+            <div id="statsContainer" class="stats-grid">
+                <div class="stat-card">
+                    <i class="icon-users"></i>
+                    <h3 id="totalVotes">0</h3>
+                    <p>Total Votes</p>
+                </div>
+                <div class="stat-card">
+                    <i class="icon-trending-up"></i>
+                    <h3 id="turnoutRate">0%</h3>
+                    <p>Turnout Rate</p>
+                </div>
+                <div class="stat-card">
+                    <i class="icon-award"></i>
+                    <h3 id="winnerName">-</h3>
+                    <p>Current Leader</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        window.onload = function() {
+            loadResults();
+        };
+        
+        function loadResults() {
+            var votes = JSON.parse(localStorage.getItem('votes') || '{}');
+            var candidates = JSON.parse(localStorage.getItem('candidates') || '[]');
+            var resultsContainer = document.getElementById('resultsContainer');
+            
+            if (candidates.length === 0) {
+                resultsContainer.innerHTML = '<p class="no-data">No candidates added yet.</p>';
+                return;
+            }
+            
+            var totalVotes = 0;
+            var candidateVotes = {};
+            
+            candidates.forEach(function(candidate) {
+                candidateVotes[candidate.name] = votes[candidate.name] || 0;
+                totalVotes += candidateVotes[candidate.name];
+            });
+            
+            if (totalVotes === 0) {
+                resultsContainer.innerHTML = '<p class="no-data">No votes cast yet. Results will appear once voting begins.</p>';
+                document.getElementById('totalVotes').textContent = '0';
+                document.getElementById('turnoutRate').textContent = '0%';
+                document.getElementById('winnerName').textContent = '-';
+                return;
+            }
+            
+            resultsContainer.innerHTML = '';
+            
+            var sortedCandidates = candidates.sort(function(a, b) {
+                return (candidateVotes[b.name] || 0) - (candidateVotes[a.name] || 0);
+            });
+            
+            sortedCandidates.forEach(function(candidate) {
+                var voteCount = candidateVotes[candidate.name];
+                var percentage = totalVotes > 0 ? Math.round((voteCount / totalVotes) * 100) : 0;
+                
+                var resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = '<div class="result-header">' +
+                    '<span class="candidate-name">' + candidate.name + '</span>' +
+                    '<span class="vote-count">' + voteCount + ' votes (' + percentage + '%)</span>' +
+                    '</div>' +
+                    '<div class="progress-bar">' +
+                    '<div class="progress-fill" style="width: ' + percentage + '%"></div>' +
+                    '</div>';
+                resultsContainer.appendChild(resultItem);
+            });
+            
+            var registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            var turnout = registeredUsers.length > 0 ? Math.round((totalVotes / registeredUsers.length) * 100) : 0;
+            
+            document.getElementById('totalVotes').textContent = totalVotes.toLocaleString();
+            document.getElementById('turnoutRate').textContent = turnout + '%';
+            document.getElementById('winnerName').textContent = sortedCandidates[0].name;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Candidate - Online Voting System</title>
+    <link href="styles/dashboard.css" rel="stylesheet">
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="icon-shield"></i>
+                </div>
+                <span>VoteSecure Admin</span>
+            </div>
+            <a href="admin-dashboard.html" class="logout">Back</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container form-container">
+            <h1 class="page-title">Add New Candidate</h1>
+            
+            <form class="admin-form" onsubmit="return validateCandidateForm()">
+                <div class="form-group">
+                    <label>Candidate Name</label>
+                    <input type="text" id="candidateName" name="candidateName" placeholder="Enter candidate full name" minlength="3" maxlength="50" pattern="[A-Za-z ]{3,50}" title="Only letters and spaces (3-50 characters)" required>
+                    <small class="input-hint">Only letters and spaces (3-50 characters)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Party Affiliation</label>
+                    <input type="text" id="party" name="party" placeholder="e.g., Democratic Party" minlength="2" maxlength="50" pattern="[A-Za-z ]{2,50}" title="Only letters and spaces (2-50 characters)" required>
+                    <small class="input-hint">Only letters and spaces (2-50 characters)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Election</label>
+                    <select id="election" name="election" required>
+                        <option value="">Select Election</option>
+                        <option value="presidential">Presidential Election 2025</option>
+                        <option value="council">City Council Election</option>
+                        <option value="school">School Board Election</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Biography</label>
+                    <textarea id="biography" name="biography" placeholder="Brief candidate biography" rows="4" minlength="20"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit-full">Add Candidate</button>
+            </form>
+            
+            <script>
+                function validateCandidateForm() {
+                    var candidateName = document.getElementById('candidateName').value.trim();
+                    var party = document.getElementById('party').value.trim();
+                    var election = document.getElementById('election').value;
+                    var biography = document.getElementById('biography').value.trim();
+                    
+                    if (!candidateName || !party || !election) {
+                        alert('Please fill in all required fields!');
+                        return false;
+                    }
+                    
+                    var namePattern = /^[A-Za-z ]{3,50}$/;
+                    if (!namePattern.test(candidateName)) {
+                        alert('Candidate name must contain only letters and spaces (3-50 characters)!');
+                        return false;
+                    }
+                    
+                    var partyPattern = /^[A-Za-z ]{2,50}$/;
+                    if (!partyPattern.test(party)) {
+                        alert('Party name must contain only letters and spaces (2-50 characters)!');
+                        return false;
+                    }
+                    
+                    if (biography && (biography.length < 20 || biography.length > 500)) {
+                        alert('Biography must be between 20 and 500 characters if provided!');
+                        return false;
+                    }
+                    
+                    var candidates = JSON.parse(localStorage.getItem('candidates') || '[]');
+                    var newCandidate = {
+                        id: Date.now(),
+                        name: candidateName,
+                        party: party,
+                        election: election,
+                        biography: biography,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    candidates.push(newCandidate);
+                    localStorage.setItem('candidates', JSON.stringify(candidates));
+                    localStorage.setItem('lastCreatedCandidate', JSON.stringify(newCandidate));
+                    
+                    window.location.href = 'candidate-added.html';
+                    return false;
+                }
+            </script>
+        </div>
+    </main>
+</body>
+</html>

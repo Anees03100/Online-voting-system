@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Dashboard - Online Voting System</title>
+    <link href="styles/dashboard.css" rel="stylesheet">
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="icon-vote"></i>
+                </div>
+                <span>VoteSecure</span>
+            </div>
+            <a href="#" onclick="return handleLogout()" class="logout">Logout</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="welcome-banner">
+                <div class="welcome-content">
+                    <h2 id="welcomeMessage">Welcome back, Voter!</h2>
+                    <p>Your voice matters. Participate in active elections below.</p>
+                </div>
+                <div class="quick-stats">
+                    <div class="quick-stat-item">
+                        <i class="icon-check-circle"></i>
+                        <div>
+                            <strong>2</strong>
+                            <span>Votes Cast</span>
+                        </div>
+                    </div>
+                    <div class="quick-stat-item">
+                        <i class="icon-clock"></i>
+                        <div>
+                            <strong>3</strong>
+                            <span>Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h1 class="page-title">Available Elections</h1>
+            
+            <div id="electionsGrid" class="elections-grid">
+                <div class="election-card">
+                    <div class="election-header">
+                        <h3>Presidential Election 2025</h3>
+                        <span class="badge badge-active">Active</span>
+                    </div>
+                    <p class="election-date">
+                        <i class="icon-calendar"></i>
+                        November 15, 2025
+                    </p>
+                    <a href="vote.html" class="btn-vote">Cast Vote</a>
+                </div>
+
+                <div class="election-card">
+                    <div class="election-header">
+                        <h3>City Council Election</h3>
+                        <span class="badge badge-active">Active</span>
+                    </div>
+                    <p class="election-date">
+                        <i class="icon-calendar"></i>
+                        October 28, 2025
+                    </p>
+                    <a href="vote.html" class="btn-vote">Cast Vote</a>
+                </div>
+
+                <div class="election-card">
+                    <div class="election-header">
+                        <h3>School Board Election</h3>
+                        <span class="badge badge-upcoming">Upcoming</span>
+                    </div>
+                    <p class="election-date">
+                        <i class="icon-calendar"></i>
+                        December 5, 2025
+                    </p>
+                    <button class="btn-vote btn-disabled" disabled>Not Started</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        window.onload = function() {
+            var currentUser = localStorage.getItem('currentUser');
+            
+            if (!currentUser || currentUser === 'null') {
+                alert('Please login first to access the dashboard!');
+                setTimeout(function() {
+                    window.location.href = 'login-voter.html';
+                }, 500);
+                return;
+            }
+            
+            try {
+                var user = JSON.parse(currentUser);
+                if (user && user.fullName) {
+                    document.getElementById('welcomeMessage').textContent = 'Welcome back, ' + user.fullName + '!';
+                }
+            } catch (e) {
+                alert('Session error. Please login again!');
+                localStorage.removeItem('currentUser');
+                setTimeout(function() {
+                    window.location.href = 'login-voter.html';
+                }, 500);
+                return;
+            }
+            
+            var elections = JSON.parse(localStorage.getItem('elections') || '[]');
+            if (elections.length > 0) {
+                var electionsGrid = document.getElementById('electionsGrid');
+                elections.forEach(function(election) {
+                    var electionCard = document.createElement('div');
+                    electionCard.className = 'election-card';
+                    electionCard.innerHTML = '<div class="election-header">' +
+                        '<h3>' + election.title + '</h3>' +
+                        '<span class="badge badge-active">Active</span>' +
+                        '</div>' +
+                        '<p class="election-date">' +
+                        '<i class="icon-calendar"></i>' +
+                        election.startDate +
+                        '</p>' +
+                        '<a href="vote.html" class="btn-vote">Cast Vote</a>';
+                    electionsGrid.appendChild(electionCard);
+                });
+            }
+        };
+        
+        function handleLogout() {
+            var confirmed = confirm('Are you sure you want to logout?');
+            if (confirmed) {
+                localStorage.removeItem('currentUser');
+                alert('You have been logged out successfully!');
+                setTimeout(function() {
+                    window.location.href = 'index.html';
+                }, 500);
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>

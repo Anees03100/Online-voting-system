@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Added - Online Voting System</title>
+    <link href="styles/dashboard.css" rel="stylesheet">
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-card">
+            <div class="success-icon">
+                <i class="icon-check-circle"></i>
+            </div>
+            <h1>Candidate Added Successfully!</h1>
+            <div id="candidateDetails" class="candidate-details"></div>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                <a href="admin-dashboard.html" class="btn-primary">Back to Dashboard</a>
+                <a href="add-candidate.html" class="btn-secondary">Add Another</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        window.onload = function() {
+            var candidate = JSON.parse(localStorage.getItem('lastCreatedCandidate') || '{}');
+            
+            if (candidate.name) {
+                var details = '<p style="color: var(--text-muted); margin-bottom: 1rem;">Candidate details:</p>';
+                details += '<div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 8px; text-align: left;">';
+                details += '<p style="margin-bottom: 0.5rem;"><strong>Name:</strong> ' + candidate.name + '</p>';
+                details += '<p style="margin-bottom: 0.5rem;"><strong>Party:</strong> ' + candidate.party + '</p>';
+                details += '<p style="margin-bottom: 0.5rem;"><strong>Election:</strong> ' + candidate.election + '</p>';
+                if (candidate.biography) {
+                    details += '<p><strong>Biography:</strong> ' + candidate.biography + '</p>';
+                }
+                details += '</div>';
+                
+                document.getElementById('candidateDetails').innerHTML = details;
+            }
+        };
+    </script>
+</body>
+</html>
